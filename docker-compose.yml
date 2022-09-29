@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  # this is the container's hostname within the backend docker network
+  service-name:
+    build:
+      context: '.'
+      target: development
+    volumes:
+      - '.:/home/node/app'
+      # - 'dotconfig:/home/node/.config'
+    environment:
+      NODE_ENV: development
+      HOST: '0.0.0.0'
+      PORT: '8080'
+      # GITHUB_NPM_TOKEN: '${MY_GITHUB_NPM_TOKEN}'
+    ports:
+      # running server node inspector (debug) port
+      - '9243:9229'
+      # testing node inspector (debug) port
+      - '9244:9244'
+      # public
+      - '8005:8080'
+    env_file:
+      - config.env
+    working_dir: '/home/node/app'
+    command: ['yarn', 'start:dev']
+
+# volumes:
+#   dotconfig:
+#     # created by bootstrap.sh script using gcloud container
+#     external: true
+
+networks:
+  default:
+    # created by bootstrap.sh script
+    # external: true
+    name: my-backend
